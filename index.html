@@ -3,63 +3,297 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Мини-образовательный сайт</title>
+  <title>Шағын білім беру сайты</title>
   <style>
+    :root {
+      --bg-color: linear-gradient(135deg, #e0eafc, #cfdef3);
+      --card-bg: #ffffff;
+      --text-color: #333333;
+      --subtext-color: #5f6368;
+      --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      --quiz-bg: #f8f9fa;
+      --quiz-border: #e9ecef;
+      --option-bg: #ffffff;
+      --option-border: #ced4da;
+      --option-hover: #e8f0fe;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: linear-gradient(135deg, #18191a, #242526);
+      --card-bg: #242526;
+      --text-color: #e4e6eb;
+      --subtext-color: #b0b3b8;
+      --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      --quiz-bg: #18191a;
+      --quiz-border: #3a3b3c;
+      --option-bg: #3a3b3c;
+      --option-border: #4e4f50;
+      --option-hover: #4e4f50;
+    }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #e0eafc, #cfdef3);
+      background: var(--bg-color);
+      color: var(--text-color);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       margin: 0;
-      transition: all 0.3s ease;
+      padding: 20px;
+      box-sizing: border-box;
+      transition: background 0.3s ease, color 0.3s ease;
     }
+
     .card {
-      background: #ffffff;
-      padding: 35px;
+      background: var(--card-bg);
+      padding: 30px;
       border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--card-shadow);
+      max-width: 460px;
+      width: 100%;
       text-align: center;
-      max-width: 420px;
-      transition: all 0.3s ease;
+      position: relative;
+      transition: background 0.3s ease;
     }
-    h1 { color: #1a73e8; margin-bottom: 8px; }
-    p { color: #5f6368; font-size: 16px; }
-    .badge-container { margin: 15px 0; }
-    .theme-btn {
-      padding: 6px 14px;
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .theme-toggle-btn {
+      background: none;
+      border: 1px solid var(--option-border);
+      color: var(--text-color);
       border-radius: 20px;
-      border: 1px solid #aaa;
-      background: white;
-      cursor: pointer;
+      padding: 5px 12px;
       font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--option-hover);
+    }
+
+    h1 {
+      color: #1a73e8;
+      font-size: 22px;
+      margin: 10px 0 6px 0;
+    }
+
+    p.subtitle {
+      color: var(--subtext-color);
+      font-size: 15px;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    .badge-container {
+      margin-bottom: 20px;
+    }
+
+    .quiz-container {
+      text-align: left;
+      background: var(--quiz-bg);
+      padding: 18px;
+      border-radius: 12px;
+      border: 1px solid var(--quiz-border);
+    }
+
+    .question {
+      font-weight: 600;
+      color: var(--text-color);
+      margin-bottom: 14px;
+      font-size: 15px;
+    }
+
+    .option-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      background: var(--option-bg);
+      border: 1px solid var(--option-border);
+      border-radius: 8px;
+      color: var(--text-color);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .option-btn:hover {
+      background: var(--option-hover);
+      border-color: #1a73e8;
+    }
+
+    .option-btn.correct {
+      background: #28a745 !important;
+      border-color: #28a745 !important;
+      color: #ffffff !important;
+      font-weight: bold;
+    }
+
+    .option-btn.wrong {
+      background: #dc3545 !important;
+      border-color: #dc3545 !important;
+      color: #ffffff !important;
+    }
+
+    .result-box {
+      display: none;
+      text-align: center;
+      padding: 15px 0;
+    }
+
+    .restart-btn {
+      padding: 9px 22px;
+      background: #1a73e8;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      margin-top: 12px;
+      transition: opacity 0.2s;
+    }
+
+    .restart-btn:hover {
+      opacity: 0.9;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Мини-образовательный сайт</h1>
-    <p>Привет, студенты!</p>
 
-    <!-- Тікелей GitHub Actions статусы -->
+  <div class="card">
+    <div class="header-top">
+      <span style="font-size: 12px; font-weight: bold; color: var(--subtext-color);">Edu-Platform</span>
+      <button class="theme-toggle-btn" id="themeBtn" onclick="toggleTheme()">🌙 Түнгі режим</button>
+    </div>
+
+    <h1>Мини-білім беру сайты</h1>
+    <p class="subtitle">Сәлем, студенттер! Біліміңізді тексеріп көріңіз:</p>
+
+    <!-- GitHub Actions динамикалық статусы -->
     <div class="badge-container">
       <img src="https://github.com/aidarovna3105/edu-website/actions/workflows/ci.yml/badge.svg" alt="CI/CD Status">
     </div>
 
-    <!-- Режимді ауыстыру -->
-    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 Түнгі режим</button>
+    <!-- Интерактивті квиз алаңы -->
+    <div class="quiz-container">
+      <div id="quizContent">
+        <div class="question" id="questionText">Сұрақ жүктелуде...</div>
+        <div id="optionsContainer"></div>
+      </div>
+
+      <div class="result-box" id="resultBox">
+        <h3 id="resultTitle" style="margin-top: 0; color: var(--text-color);">Тест аяқталды!</h3>
+        <p id="scoreText" style="color: var(--subtext-color); font-size: 16px; margin: 10px 0;"></p>
+        <button class="restart-btn" onclick="startQuiz()">Қайта тапсыру</button>
+      </div>
+    </div>
   </div>
 
   <script>
+    // Күндізгі және Түнгі режимді ауыстыру функциясы
     function toggleTheme() {
-      const isDark = document.body.style.backgroundColor === 'rgb(30, 30, 30)';
-      document.body.style.backgroundColor = isDark ? '#e0eafc' : '#1e1e1e';
-      document.querySelector('.card').style.backgroundColor = isDark ? '#ffffff' : '#2a2a2a';
-      document.querySelector('h1').style.color = isDark ? '#1a73e8' : '#8ab4f8';
-      document.querySelector('p').style.color = isDark ? '#5f6368' : '#e8eaed';
-      document.getElementById('themeBtn').innerText = isDark ? '🌙 Түнгі режим' : '☀️ Күндізгі режим';
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', targetTheme);
+      
+      const themeBtn = document.getElementById('themeBtn');
+      if (targetTheme === 'dark') {
+        themeBtn.innerText = '☀️ Күндізгі режим';
+      } else {
+        themeBtn.innerText = '🌙 Түнгі режим';
+      }
     }
+
+    // CI/CD квиз сұрақтары
+    const questions = [
+      {
+        q: "1. CI/CD ұғымындағы 'CI' нені білдіреді?",
+        options: ["Continuous Integration", "Code Internet", "Control Interface", "Computer Instruction"],
+        answer: 0
+      },
+      {
+        q: "2. GitHub Actions сценарийлері қандай файлдық форматта жазылады?",
+        options: [".json", ".yml (YAML)", ".xml", ".txt"],
+        answer: 1
+      },
+      {
+        q: "3. Статикалық сайтты интернетке тегін әрі автоматты шығаратын қызмет қалай аталады?",
+        options: ["GitHub Projects", "GitHub Pages", "GitHub Issues", "GitHub Wiki"],
+        answer: 1
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function startQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      document.getElementById('resultBox').style.display = 'none';
+      document.getElementById('quizContent').style.display = 'block';
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const qData = questions[currentQuestion];
+      document.getElementById('questionText').innerText = qData.q;
+      const optionsContainer = document.getElementById('optionsContainer');
+      optionsContainer.innerHTML = '';
+
+      qData.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = opt;
+        btn.onclick = () => checkAnswer(idx, btn);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selectedIdx, selectedBtn) {
+      const allBtns = document.querySelectorAll('.option-btn');
+      allBtns.forEach(b => b.disabled = true);
+
+      const correctIdx = questions[currentQuestion].answer;
+      if (selectedIdx === correctIdx) {
+        selectedBtn.classList.add('correct');
+        score++;
+      } else {
+        selectedBtn.classList.add('wrong');
+        allBtns[correctIdx].classList.add('correct');
+      }
+
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+          showQuestion();
+        } else {
+          showResult();
+        }
+      }, 1000);
+    }
+
+    function showResult() {
+      document.getElementById('quizContent').style.display = 'none';
+      const resultBox = document.getElementById('resultBox');
+      resultBox.style.display = 'block';
+      document.getElementById('scoreText').innerText = `Сіздің нәтижеңіз: 3 сұрақтан ${score} дұрыс жауап!`;
+    }
+
+    // Бастапқы іске қосу
+    startQuiz();
   </script>
 </body>
 </html>
