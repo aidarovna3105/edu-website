@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="kk">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,33 +13,27 @@
       align-items: center;
       min-height: 100vh;
       margin: 0;
+      transition: all 0.3s ease;
     }
     .card {
       background: #ffffff;
-      padding: 40px;
+      padding: 35px;
       border-radius: 16px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
       text-align: center;
-      max-width: 480px;
+      max-width: 420px;
+      transition: all 0.3s ease;
     }
-    h1 {
-      color: #1a73e8;
-      margin-bottom: 15px;
-    }
-    p {
-      color: #5f6368;
-      font-size: 18px;
-      line-height: 1.5;
-    }
-    .status {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 8px 16px;
-      background-color: #e6f4ea;
-      color: #137333;
+    h1 { color: #1a73e8; margin-bottom: 8px; }
+    p { color: #5f6368; font-size: 16px; }
+    .badge-container { margin: 15px 0; }
+    .theme-btn {
+      padding: 6px 14px;
       border-radius: 20px;
-      font-weight: 600;
-      font-size: 14px;
+      border: 1px solid #aaa;
+      background: white;
+      cursor: pointer;
+      font-size: 13px;
     }
   </style>
 </head>
@@ -47,7 +41,25 @@
   <div class="card">
     <h1>Мини-образовательный сайт</h1>
     <p>Привет, студенты!</p>
-    <div class="status">CI/CD Pipeline: GitHub Actions + Pages</div>
+
+    <!-- Тікелей GitHub Actions статусы -->
+    <div class="badge-container">
+      <img src="https://github.com/aidarovna3105/edu-website/actions/workflows/ci.yml/badge.svg" alt="CI/CD Status">
+    </div>
+
+    <!-- Режимді ауыстыру -->
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 Түнгі режим</button>
   </div>
+
+  <script>
+    function toggleTheme() {
+      const isDark = document.body.style.backgroundColor === 'rgb(30, 30, 30)';
+      document.body.style.backgroundColor = isDark ? '#e0eafc' : '#1e1e1e';
+      document.querySelector('.card').style.backgroundColor = isDark ? '#ffffff' : '#2a2a2a';
+      document.querySelector('h1').style.color = isDark ? '#1a73e8' : '#8ab4f8';
+      document.querySelector('p').style.color = isDark ? '#5f6368' : '#e8eaed';
+      document.getElementById('themeBtn').innerText = isDark ? '🌙 Түнгі режим' : '☀️ Күндізгі режим';
+    }
+  </script>
 </body>
 </html>
